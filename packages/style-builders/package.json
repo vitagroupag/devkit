@@ -1,0 +1,14 @@
+{
+  "name": "@vitagroup/style-builders",
+  "version": "0.1.0",
+  "builders": "src/builders.json",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "glob": "^7.1.6"
+  },
+  "peerDependencies": {
+    "@angular-devkit/core": "^11.0.3",
+    "@angular-devkit/architect": "^0.1100.3",
+    "sass": "^1.30.0"
+  }
+}

@@ -1,0 +1,9 @@
+@import "bar";
+
+:root {
+  --bar: transparent;
+}
+
+.foo {
+  background-color: $foo;
+}
