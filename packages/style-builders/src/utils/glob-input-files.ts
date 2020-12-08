@@ -4,6 +4,7 @@ export interface GlobInputFileOptions {
   files?: string[];
   include?: string[];
   exclude?: string[];
+  /* Defines the current working directory for the glob resolution */
   cwd?: string;
 }
 
