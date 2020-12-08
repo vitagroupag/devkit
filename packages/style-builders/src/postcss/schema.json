@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "additionalProperties": true,
+  "type": "object",
+  "properties": {
+    "outDir": {
+      "type": "string",
+      "description": "The output directory path to write the output files to",
+      "optional": false
+    },
+    "files": {
+      "type": "array",
+      "description": "An array of file paths relative to the rootDir used as input",
+      "optional": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "include": {
+      "type": "array",
+      "description": "An array of file patterns to be include in the compilation",
+      "optional": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "description": "An array of file patterns to be excluded from the compilation",
+      "optional": true,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

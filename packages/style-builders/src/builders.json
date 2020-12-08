@@ -5,6 +5,11 @@
       "implementation": "./sass",
       "schema": "./sass/schema.json",
       "description": "Compiles sass to css and optionally outputs it"
+    },
+    "postcss": {
+      "implementation": "./postcss",
+      "schema": "./postcss/schema.json",
+      "description": "Post processes css source code using installed plugins"
     }
   }
 }
