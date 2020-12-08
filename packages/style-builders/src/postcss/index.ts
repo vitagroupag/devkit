@@ -4,22 +4,22 @@ import { outputFileSync, readFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import postcss, { AcceptedPlugin, ProcessOptions } from 'postcss';
 import postcssrc from 'postcss-load-config';
-import { absolutifyPath, GlobInputFileOptions, globInputFiles } from '../utils';
+import { GlobInputFileOptions, globInputFiles } from '../utils';
 
 export interface Options extends JsonObject, GlobInputFileOptions {
   replace?: boolean;
   outDir?: string;
   ext?: string;
-  configPath?: string;
+  config?: string;
 }
 
 export default createBuilder<Options>((options, context) => {
   return new Promise<BuilderOutput>((resolve) => {
-    const { ext = '.css', replace, outDir, configPath: rc } = options;
-    const { logger, currentDirectory: cwd, workspaceRoot: wsd } = context;
-    const configPath = absolutifyPath(rc, cwd);
+    const { ext = '.css', replace, outDir, config, rootDir } = options;
+    const { logger, workspaceRoot } = context;
+    const configPath = join(workspaceRoot, (config || rootDir));
     const { plugins, options: postCssOptions } = postcssrc.sync(null, configPath, {
-      stopDir: wsd
+      stopDir: workspaceRoot
     });
 
     const postCssProcessor = postcss(plugins as AcceptedPlugin[]);
@@ -32,17 +32,15 @@ export default createBuilder<Options>((options, context) => {
     try {
       const outFilesAndPromises = [];
 
-      logger.debug(`Analyzing input file patterns...`);
-      const inputFiles = globInputFiles({ ...options, cwd });
-      logger.debug(`Found ${ inputFiles.length } matching input file(s).`);
+      logger.info(`Analyzing input file patterns...`);
+      logger.debug(`rootDir = ${rootDir}, files = ${options?.files}, include = ${options?.include}, exclude = ${options?.exclude}`);
+      const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
+      logger.info(`Found ${ inputFiles.length } matching input file(s).`);
 
       for (const file of inputFiles) {
-        const outFile = absolutifyPath(
-          !replace
-            ? join(outDir, basename(file, extname(file)) + ext)
-            : file,
-          cwd
-        );
+        const outFile = !replace
+          ? join(outDir, basename(file, extname(file)) + ext)
+          : file;
 
         logger.info(`Processing css file "${ file }"`);
         const css = readFileSync(file).toString();
@@ -74,6 +72,7 @@ export default createBuilder<Options>((options, context) => {
         });
       }).catch(err => resolve({ success: false, error: err.toString() }));
     } catch (err) {
+      logger.error(err.toString());
       resolve({ success: false, error: err.toString() });
     }
   });

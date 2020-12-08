@@ -9,7 +9,12 @@
     "postcss": {
       "implementation": "./postcss",
       "schema": "./postcss/schema.json",
-      "description": "Post processes css source code using installed plugins"
+      "description": "Post processes css source code using any discoverable postcss configuration"
+    },
+    "lib": {
+      "implementation": "./lib",
+      "schema": "./lib/schema.json",
+      "description": "Builds ready to publish artifacts for re-usable preprocessor APIs"
     }
   }
 }

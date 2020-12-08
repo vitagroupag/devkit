@@ -13,21 +13,22 @@ export interface Options extends JsonObject, SassJsonOptions, GlobInputFileOptio
 
 export default createBuilder<Options>((options, context) => {
   return new Promise<BuilderOutput>((resolve) => {
-    const { logger, currentDirectory: cwd } = context;
-    const outDirPath = join(cwd, options.outDir);
+    const { logger, workspaceRoot } = context;
+    const { rootDir, outDir } = options;
 
     try {
       const outputFiles = [];
 
-      logger.debug(`Analyzing input file patterns...`);
-      const inputFiles = globInputFiles({ ...options, cwd });
-      logger.debug(`Found ${ inputFiles.length } matching input file(s).`);
+      logger.info(`Analyzing input file patterns...`);
+      logger.debug(`rootDir = ${rootDir}, files = ${options?.files}, include = ${options?.include}, exclude = ${options?.exclude}`);
+      const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
+      logger.info(`Found ${ inputFiles.length } matching input file(s).`);
 
       for (const file of inputFiles) {
-        const outFile = join(outDirPath, basename(file, extname(file)) + '.css');
+        const outFile = join(outDir, basename(file, extname(file)) + '.css');
 
         if (basename(outFile).startsWith('_')) {
-          logger.debug(`Found leading underscore, skipping "${outFile}"`);
+          logger.debug(`Found leading underscore, skipping "${ outFile }"`);
           continue;
         }
 
@@ -49,7 +50,7 @@ export default createBuilder<Options>((options, context) => {
       });
     } catch (err) {
       logger.error(err.toString());
-      resolve({ success: false });
+      resolve({ success: false, error: err.toString() });
     }
   });
 });

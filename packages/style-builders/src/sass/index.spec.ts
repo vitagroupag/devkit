@@ -1,17 +1,16 @@
 import { JsonArray } from '@angular-devkit/core';
-import { architect, architectHost } from '../test-setup';
+import { architect } from '../test-setup';
 import { Options } from './index';
 
 describe('Sass Builder', () => {
-  beforeEach(() => architectHost.currentDirectory = __dirname);
-
   it('should properly match input and calculate output files', async () => {
     // A "run" can contain multiple outputs, and contains progress information.
     const run = await architect.scheduleBuilder('@vitagroup/style-builders:sass', {
-      outDir: '../../dist/sass',
-      include: [ '__mock__/*.scss' ],
-      exclude: [ '__mock__/ignore.scss' ],
-      sourceMap: true
+      rootDir: 'packages/style-builders/src/sass/__mock__',
+      include: [ '*.scss' ],
+      exclude: [ 'ignore.scss' ],
+      sourceMap: true,
+      outDir: 'dist/style-builders/sass'
     } as Options);
 
     // The "result" member is the next output of the runner.

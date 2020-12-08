@@ -3,21 +3,40 @@
   "additionalProperties": true,
   "type": "object",
   "properties": {
-    "config": {
+    "style": {
       "type": "string",
-      "description": "The path to use for postcss configuration discovery"
+      "enum": [ "sass" ],
+      "description": "The preprocessor to use for style files"
     },
-    "ext": {
-      "type": "string",
-      "description": "The file extension to use for output files"
+    "copy": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "optional": false
+              },
+              "to": { "type": "string" },
+              "pattern": { "type": "string" },
+              "exclude": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
     },
     "outDir": {
       "type": "string",
-      "description": "The output directory path to write the output files to"
-    },
-    "replace": {
-      "type": "boolean",
-      "description": "Indicates whether to simply replace the given input files. No outDir required using replace"
+      "description": "The output directory path to write the output files to",
+      "optional": false
     },
     "files": {
       "type": "array",

@@ -1,17 +1,15 @@
 import { JsonArray } from '@angular-devkit/core';
-import { architect, architectHost } from '../test-setup';
+import { architect } from '../test-setup';
 import { Options } from './index';
 
 describe('PostCSS Builder', () => {
-  beforeEach(() => architectHost.currentDirectory = __dirname);
-
   it('should properly match input and calculate output files', async () => {
     // A "run" can contain multiple outputs, and contains progress information.
     const run = await architect.scheduleBuilder('@vitagroup/style-builders:postcss', {
-      outDir: '../../dist/postcss',
-      include: [ '__mock__/*.css' ],
-      exclude: [ '__mock__/ignore.css' ],
-      configPath: '__mock__/postcss.config.js'
+      rootDir: 'packages/style-builders/src/postcss/__mock__',
+      include: [ '*.css' ],
+      exclude: [ 'ignore.css' ],
+      outDir: 'dist/style-builders/postcss'
     } as Options);
 
     // The "result" member is the next output of the runner.
