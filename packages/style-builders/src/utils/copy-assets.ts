@@ -24,7 +24,7 @@ export interface GlobAssetCopyOptions {
 }
 
 export interface CallableAssetCopy extends AssetCopy {
-  (outDir?: string): Promise<void>;
+  (): Promise<void>;
 }
 
 export function makeCallableAssetCopy({ from, to, exclude }: AssetCopy, workspaceRoot: string, outDir: string): CallableAssetCopy {
@@ -64,4 +64,8 @@ export function globAssetCopies({ copy }: GlobAssetCopyOptions, workspaceRoot: s
       assetCopy => makeCallableAssetCopy(assetCopy, workspaceRoot, outDir)
     ));
   }, []);
+}
+
+export function assetCopy(assetCopy: AssetCopy, workspaceRoot: string, outDir: string): Promise<void> {
+  return makeCallableAssetCopy(assetCopy, workspaceRoot, outDir)();
 }

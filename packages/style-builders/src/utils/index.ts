@@ -3,4 +3,5 @@
 
 export * from './absolutify-path';
 export * from './copy-assets';
+export * from './copy-package-metadata';
 export * from './glob-input-files';

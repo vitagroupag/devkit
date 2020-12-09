@@ -8,6 +8,18 @@
       "enum": [ "sass" ],
       "description": "The preprocessor to use for style files"
     },
+    "stylePreprocessorOptions": {
+      "type": "object",
+      "description": "Options to pass the the used style preprocessor",
+      "properties": {
+        "includePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "copy": {
       "type": "array",
       "items": {

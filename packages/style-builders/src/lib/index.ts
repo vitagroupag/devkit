@@ -1,8 +1,9 @@
 import { createBuilder } from '@angular-devkit/architect';
 import { JsonObject } from '@angular-devkit/core';
+import { join } from 'path';
 import * as postcssBuilder from '../postcss';
 import * as sassBuilder from '../sass';
-import { globAssetCopies, GlobAssetCopyOptions, GlobInputFileOptions } from '../utils';
+import { copyPackageMetadata, globAssetCopies, GlobAssetCopyOptions, GlobInputFileOptions } from '../utils';
 
 export type StylePreprocessorType = 'sass' | string;
 
@@ -13,6 +14,9 @@ export interface Options extends JsonObject, GlobAssetCopyOptions {
   };
   postcssConfig?: string;
   style?: StylePreprocessorType;
+  stylePreprocessorOptions?: {
+    includePaths?: string[];
+  };
   outDir: string;
   /** The root directory path relative to the workspace root */
   rootDir: string;
@@ -21,8 +25,14 @@ export interface Options extends JsonObject, GlobAssetCopyOptions {
 export default createBuilder<Options>(async (options, context) => {
   const { logger, workspaceRoot } = context;
   const { rootDir, outDir, postcssConfig, style = 'sass', prebuild } = options;
+  const packageJson = join(rootDir, 'package.json');
 
   try {
+    logger.info(`Copying package metadata...`);
+    logger.debug(`packageJson = "${ packageJson }"`);
+    logger.debug(`workspaceRoot = "${ workspaceRoot }"`);
+    await copyPackageMetadata(packageJson, { workspaceRoot, outDir });
+
     if (prebuild != null) {
       logger.info(`Prebuild configuration found. Scheduling builders...`);
 
@@ -30,7 +40,8 @@ export default createBuilder<Options>(async (options, context) => {
       const sassBuild = await context.scheduleBuilder(`@vitagroup/style-builders:${ style }`, {
         ...prebuild,
         outDir: prebuild.outDir || outDir,
-        rootDir: prebuild.rootDir || rootDir
+        rootDir: prebuild.rootDir || rootDir,
+        includePaths: options.stylePreprocessorOptions?.includePaths
       } as sassBuilder.Options, {
         logger: context.logger.createChild(style)
       });
@@ -62,6 +73,7 @@ export default createBuilder<Options>(async (options, context) => {
 
     return { success: true };
   } catch (err) {
+    logger.error(err);
     return { success: false, error: err.toString() };
   }
 });
