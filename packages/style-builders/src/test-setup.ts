@@ -1,10 +1,27 @@
 import { Architect } from '@angular-devkit/architect';
 import { TestingArchitectHost } from '@angular-devkit/architect/testing';
-import { schema } from '@angular-devkit/core';
+import { logging, schema } from '@angular-devkit/core';
 import { join } from 'path';
 
 export let architect: Architect;
 export let architectHost: TestingArchitectHost;
+
+export let logger: logging.Logger;
+
+if (global[ '__DEBUG__' ]) {
+  let logs: string[];
+
+  beforeEach(() => {
+    logs = [];
+    logger = new logging.Logger('root');
+    logger.subscribe(entry =>
+      logs.push(`[${ entry.level }] ${ entry.message }`)
+    );
+  });
+  afterEach(() => {
+    console.log(logs.join('\n'));
+  });
+}
 
 beforeAll(async () => {
   const registry = new schema.CoreSchemaRegistry();

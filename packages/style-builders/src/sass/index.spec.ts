@@ -1,5 +1,5 @@
 import { JsonArray } from '@angular-devkit/core';
-import { architect } from '../test-setup';
+import { architect, logger } from '../test-setup';
 import { Options } from './index';
 
 describe('Sass Builder', () => {
@@ -11,7 +11,7 @@ describe('Sass Builder', () => {
       exclude: [ 'ignore.scss' ],
       sourceMap: true,
       outDir: 'dist/style-builders/sass'
-    } as Options);
+    } as Options, { logger });
 
     // The "result" member is the next output of the runner.
     // This is of type BuilderOutput.

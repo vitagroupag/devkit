@@ -1,5 +1,5 @@
 import { JsonArray } from '@angular-devkit/core';
-import { architect } from '../test-setup';
+import { architect, logger } from '../test-setup';
 import { Options } from './index';
 
 describe('PostCSS Builder', () => {
@@ -10,7 +10,7 @@ describe('PostCSS Builder', () => {
       include: [ '*.css' ],
       exclude: [ 'ignore.css' ],
       outDir: 'dist/style-builders/postcss'
-    } as Options);
+    } as Options, { logger });
 
     // The "result" member is the next output of the runner.
     // This is of type BuilderOutput.

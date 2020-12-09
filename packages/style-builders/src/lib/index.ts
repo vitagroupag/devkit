@@ -35,18 +35,18 @@ export default createBuilder<Options>(async (options, context) => {
         logger: context.logger.createChild(style)
       });
 
-      const { error: sassError, outputFiles: sassOutputFiles } = await sassBuild.result;
-      if (sassError != null) return { success: false, error: sassError };
+      const sassResult = await sassBuild.result;
+      if (!sassResult.success) return sassResult;
 
       logger.info(`Running postcss builder...`);
       const postcssBuild = await context.scheduleBuilder(`@vitagroup/style-builders:postcss`, {
-        rootDir, files: sassOutputFiles, replace: true, config: postcssConfig
+        rootDir, files: sassResult.outputFiles, replace: true, config: postcssConfig
       } as postcssBuilder.Options, {
         logger: context.logger.createChild('postcss')
       });
 
-      const { error: postcssError, outputFiles: postcssOutputFiles } = await postcssBuild.result;
-      if (postcssError != null) return { success: false, error: postcssError };
+      const postcssResult = await postcssBuild.result;
+      if (!postcssResult.success) return postcssResult;
     }
 
     if (options.copy?.length > 0) {

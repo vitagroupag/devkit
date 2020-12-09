@@ -1,13 +1,8 @@
-import { logging } from '@angular-devkit/core';
-import { architect } from '../test-setup';
+import { architect, logger } from '../test-setup';
 import { Options } from './index';
 
 describe('Library Builder', () => {
   it('should properly match and output asset copies', async () => {
-    const logger = new logging.Logger('');
-    const logs = [];
-    logger.subscribe(entry => logs.push(`[${entry.level}] ${entry.message}`));
-
     // A "run" can contain multiple outputs, and contains progress information.
     const run = await architect.scheduleBuilder('@vitagroup/style-builders:lib', {
       rootDir: 'packages/style-builders/src/lib/__mock__/',
@@ -28,8 +23,6 @@ describe('Library Builder', () => {
     // the builder associated states in memory, since builders keep waiting
     // to be scheduled.
     await run.stop();
-
-    console.log(logs);
 
     expect(success).toBe(true);
   });

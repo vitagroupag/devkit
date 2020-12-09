@@ -1,9 +1,9 @@
-import { BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import { createBuilder } from '@angular-devkit/architect';
 import { JsonObject } from '@angular-devkit/core';
 import { outputFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import * as sass from 'sass';
-import { GlobInputFileOptions, globInputFiles } from '../utils';
+import { absolutifyPath, GlobInputFileOptions, globInputFiles } from '../utils';
 
 type SassJsonOptions = Omit<sass.Options, 'importer' | 'functions' | 'file' | 'data' | 'outFile'>;
 
@@ -11,29 +11,53 @@ export interface Options extends JsonObject, SassJsonOptions, GlobInputFileOptio
   outDir: string;
 }
 
-export default createBuilder<Options>((options, context) => {
-  return new Promise<BuilderOutput>((resolve) => {
-    const { logger, workspaceRoot } = context;
-    const { rootDir, outDir } = options;
+export default createBuilder<Options>(async (options, context) => {
+  const { logger, workspaceRoot } = context;
+  const { rootDir, outDir } = options;
 
-    try {
-      const outputFiles = [];
+  try {
+    const outFilesAndPromises = [];
 
-      logger.info(`Analyzing input file patterns...`);
-      logger.debug(`rootDir = ${rootDir}, files = ${options?.files}, include = ${options?.include}, exclude = ${options?.exclude}`);
-      const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
-      logger.info(`Found ${ inputFiles.length } matching input file(s).`);
+    logger.info(`Analyzing input file patterns...`);
+    logger.debug(`rootDir = ${ rootDir }, files = ${ options?.files }, include = ${ options?.include }, exclude = ${ options?.exclude }`);
+    const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
+    logger.info(`Found ${ inputFiles.length } matching input file(s).`);
 
-      for (const file of inputFiles) {
-        const outFile = join(outDir, basename(file, extname(file)) + '.css');
+    if (inputFiles?.length === 0) {
+      logger.error(`At lease some input is required! Aborting...`);
+      return { success: false };
+    }
 
-        if (basename(outFile).startsWith('_')) {
-          logger.debug(`Found leading underscore, skipping "${ outFile }"`);
-          continue;
+    for (const file of inputFiles) {
+      const outFile = absolutifyPath(
+        join(outDir, basename(file, extname(file)) + '.css'), workspaceRoot
+      );
+
+      if (basename(outFile).startsWith('_')) {
+        logger.debug(`Found leading underscore, skipping "${ file }"`);
+        continue;
+      }
+
+      logger.debug(`Preparing "${ file }" to be rendered...`);
+      const includePaths = (options.includePaths || [])
+        .concat(rootDir)
+        .map(path => absolutifyPath(path, workspaceRoot));
+      const renderPromise = new Promise((resolve, reject) => {
+        try {
+          sass.render({ ...options, includePaths, file, outFile }, (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          })
+        } catch (e) {
+          reject(e);
         }
+      });
+      outFilesAndPromises.push([ outFile, renderPromise ]);
+    }
 
-        logger.debug(`Rendering sass file "${ file }" to "${ outFile }"`);
-        const result = sass.renderSync({ ...options, file, outFile });
+    const outputFiles = [];
+    await Promise.all(outFilesAndPromises.map(
+      ([ outFile, renderPromise ]) => renderPromise.then(async (result: sass.Result) => {
         logger.info(`Rendered "${ outFile }" in ${ result.stats.duration }ms (${ result.css.length } bytes)`);
 
         outputFileSync(outFile, result.css);
@@ -41,16 +65,12 @@ export default createBuilder<Options>((options, context) => {
           outputFileSync(`${ outFile }.map`, result.map);
 
         outputFiles.push(outFile);
-      }
+      })
+    ));
 
-      resolve({
-        success: true,
-        inputFiles,
-        outputFiles
-      });
-    } catch (err) {
-      logger.error(err.toString());
-      resolve({ success: false, error: err.toString() });
-    }
-  });
+    return { success: true, inputFiles, outputFiles };
+  } catch (err) {
+    logger.error(err.toString());
+    return { success: false, error: err.toString() };
+  }
 });

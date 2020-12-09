@@ -6,6 +6,7 @@ module.exports = {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
     },
+    '__DEBUG__': false
   },
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   testEnvironment: 'node',
