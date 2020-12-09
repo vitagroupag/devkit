@@ -3,7 +3,7 @@ import { JsonObject } from '@angular-devkit/core';
 import { outputFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import * as sass from 'sass';
-import { absolutifyPath, GlobInputFileOptions, globInputFiles } from '../utils';
+import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../utils';
 
 type SassJsonOptions = Omit<sass.Options, 'importer' | 'functions' | 'file' | 'data' | 'outFile'>;
 
@@ -19,7 +19,7 @@ export default createBuilder<Options>(async (options, context) => {
     const outFilesAndPromises = [];
 
     logger.info(`Analyzing input file patterns...`);
-    logger.debug(`rootDir = ${ rootDir }, files = ${ options?.files }, include = ${ options?.include }, exclude = ${ options?.exclude }`);
+    debugLogJsonObject(logger, options);
     const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
     logger.info(`Found ${ inputFiles.length } matching input file(s).`);
 
@@ -47,7 +47,7 @@ export default createBuilder<Options>(async (options, context) => {
           sass.render({ ...options, includePaths, file, outFile }, (err, result) => {
             if (err) reject(err);
             else resolve(result);
-          })
+          });
         } catch (e) {
           reject(e);
         }
@@ -58,13 +58,13 @@ export default createBuilder<Options>(async (options, context) => {
     const outputFiles = [];
     await Promise.all(outFilesAndPromises.map(
       ([ outFile, renderPromise ]) => renderPromise.then(async (result: sass.Result) => {
-        logger.info(`Rendered "${ outFile }" in ${ result.stats.duration }ms (${ result.css.length } bytes)`);
-
         outputFileSync(outFile, result.css);
         if (result.map != null)
           outputFileSync(`${ outFile }.map`, result.map);
 
         outputFiles.push(outFile);
+
+        logger.info(`Rendered "${ outFile }" (${ result.css.length } bytes)`);
       })
     ));
 

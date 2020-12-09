@@ -61,7 +61,7 @@ export default createBuilder<Options>(async (options, context) => {
     }
 
     if (options.copy?.length > 0) {
-      logger.info(`Copying files...`);
+      logger.info(`Preparing to copy other files...`);
 
       const copies = globAssetCopies(options, workspaceRoot, outDir);
       await Promise.all(copies.map(
@@ -69,6 +69,8 @@ export default createBuilder<Options>(async (options, context) => {
           logger.debug(`Copied "${ copy.from }" to "${ copy.to }"`);
         })
       ));
+
+      logger.info('Done.');
     }
 
     return { success: true };

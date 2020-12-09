@@ -27,6 +27,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/architect": "^0.1001.7",
+    "@angular-devkit/core": "^10.1.7",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "postcss": "^8.1.14",
@@ -34,8 +36,6 @@
     "sass": "^1.30.0"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "^0.1100.3",
-    "@angular-devkit/core": "^11.0.3",
     "@nrwl/angular": "^10.4.4",
     "@nrwl/cli": "10.4.4",
     "@nrwl/eslint-plugin-nx": "10.4.4",

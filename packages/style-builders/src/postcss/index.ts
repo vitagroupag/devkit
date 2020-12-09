@@ -1,10 +1,10 @@
-import { BuilderOutput, createBuilder } from '@angular-devkit/architect';
+import { createBuilder } from '@angular-devkit/architect';
 import { JsonObject } from '@angular-devkit/core';
 import { outputFileSync, readFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import postcss, { AcceptedPlugin, ProcessOptions } from 'postcss';
 import postcssrc from 'postcss-load-config';
-import { absolutifyPath, GlobInputFileOptions, globInputFiles } from '../utils';
+import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../utils';
 
 export interface Options extends JsonObject, GlobInputFileOptions {
   replace?: boolean;
@@ -32,7 +32,7 @@ export default createBuilder<Options>(async (options, context) => {
     const outFilesAndPromises = [];
 
     logger.info(`Analyzing input file patterns...`);
-    logger.debug(`rootDir = ${rootDir}, files = ${options?.files}, include = ${options?.include}, exclude = ${options?.exclude}`);
+    debugLogJsonObject(logger, options);
     const inputFiles = globInputFiles({ ...options, rootDir }, workspaceRoot);
     logger.info(`Found ${ inputFiles.length } matching input file(s).`);
 
@@ -49,7 +49,7 @@ export default createBuilder<Options>(async (options, context) => {
         workspaceRoot
       );
 
-      logger.info(`Processing css file "${ file }"`);
+      logger.debug(`Preparing "${ file }" to be processed...`);
       const css = readFileSync(file).toString();
       const resultPromise = postCssProcessor.process(css, {
         ...postCssOptions as unknown as ProcessOptions,
@@ -62,13 +62,13 @@ export default createBuilder<Options>(async (options, context) => {
     const outputFiles = [];
     await Promise.all(outFilesAndPromises.map(([ outFile, resultPromise ]) => {
       return resultPromise.then(result => {
-        logger.info(`Writing "${ outFile }"`);
-
         outputFileSync(outFile, result.css);
         if (result.map != null)
           outputFileSync(`${ outFile }.map`, result.map.toString());
 
         outputFiles.push(outFile);
+
+        logger.info(`Processed "${outFile}"`);
       });
     }));
     return { success: true, outputFiles, inputFiles };

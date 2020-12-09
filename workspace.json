@@ -27,7 +27,25 @@
             "tsConfig": "packages/style-builders/tsconfig.lib.json",
             "packageJson": "packages/style-builders/package.json",
             "main": "packages/style-builders/src/index.ts",
-            "assets": ["packages/style-builders/*.md"]
+            "assets": [
+              "packages/style-builders/*.md",
+              "packages/style-builders/builders.json",
+              {
+                "glob": "*.json",
+                "input": "packages/style-builders/src/lib",
+                "output": "src/lib"
+              },
+              {
+                "glob": "*.json",
+                "input": "packages/style-builders/src/postcss",
+                "output": "src/postcss"
+              },
+              {
+                "glob": "*.json",
+                "input": "packages/style-builders/src/sass",
+                "output": "src/sass"
+              }
+            ]
           }
         }
       }
