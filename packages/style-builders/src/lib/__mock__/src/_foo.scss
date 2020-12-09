@@ -1,0 +1,7 @@
+@use 'variables' as vars;
+
+@mixin foo {
+  .foo {
+    color: vars.$foo-color;
+  }
+}

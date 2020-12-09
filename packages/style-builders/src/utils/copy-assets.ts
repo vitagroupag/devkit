@@ -28,12 +28,14 @@ export interface CallableAssetCopy extends AssetCopy {
 }
 
 export function makeCallableAssetCopy({ from, to, exclude }: AssetCopy, workspaceRoot: string, outDir: string): CallableAssetCopy {
-  to = to != null ? join(outDir, to) : outDir;
+  const hasDestination = to != null;
+  to = hasDestination ? join(outDir, to) : outDir;
   const filter = exclude?.length
     && (src => exclude.every(pattern => !match([ src ], pattern).length));
   from = absolutifyPath(from, workspaceRoot);
   to = absolutifyPath(to, workspaceRoot);
-  if (basename(from) !== basename(to))
+
+  if (!hasDestination && (basename(from) !== basename(to)))
     to = join(to, basename(from));
 
   return Object.assign(async function callableAssetCopy() {

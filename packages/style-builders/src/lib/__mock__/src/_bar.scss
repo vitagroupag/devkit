@@ -1,0 +1,5 @@
+@mixin bar {
+  .bar {
+    color: var(--bar-color);
+  }
+}

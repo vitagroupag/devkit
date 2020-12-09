@@ -1,0 +1,9 @@
+@use "../variables" with (
+  $bar-color: blue
+);
+
+@use "../foo" as *;
+@use "../bar" as *;
+
+@include foo;
+@include bar;

@@ -1,0 +1,6 @@
+$foo-color: red !default;
+$bar-color: green !default;
+
+:root {
+  --bar-color: #{$bar-color};
+}

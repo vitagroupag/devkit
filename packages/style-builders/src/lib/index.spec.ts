@@ -6,10 +6,15 @@ describe('Library Builder', () => {
     // A "run" can contain multiple outputs, and contains progress information.
     const run = await architect.scheduleBuilder('@vitagroup/style-builders:lib', {
       rootDir: 'packages/style-builders/src/lib/__mock__/',
-      copy: [ 'packages/style-builders/src/lib/__mock__/sass/' ],
+      copy: [
+        {
+          from: 'packages/style-builders/src/lib/__mock__/src/',
+          to: 'sass'
+        }
+      ],
       postcssConfig: 'packages/style-builders/src/lib/__mock__/postcss.config.js',
       prebuild: {
-        files: [ 'sass/prebuilt/*.scss' ],
+        files: [ 'src/prebuilt/*.scss' ],
         outDir: 'dist/style-builders/lib/prebuilt'
       },
       outDir: 'dist/style-builders/lib'
@@ -17,7 +22,7 @@ describe('Library Builder', () => {
 
     // The "result" member is the next output of the runner.
     // This is of type BuilderOutput.
-    const { success, error } = await run.result;
+    const { success } = await run.result;
 
     // Stop the builder from running. This really stops Architect from keeping
     // the builder associated states in memory, since builders keep waiting
