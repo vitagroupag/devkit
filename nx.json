@@ -1,5 +1,5 @@
 {
-  "npmScope": "vitagroup",
+  "npmScope": "vitagroup-devkit",
   "affected": {
     "defaultBase": "master"
   },
@@ -26,7 +26,7 @@
     }
   },
   "projects": {
-    "style-builders": {
+    "style": {
       "tags": []
     }
   },

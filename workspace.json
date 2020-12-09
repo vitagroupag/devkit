@@ -1,49 +1,49 @@
 {
   "version": 1,
   "projects": {
-    "style-builders": {
-      "root": "packages/style-builders",
-      "sourceRoot": "packages/style-builders/src",
+    "style": {
+      "root": "packages/style",
+      "sourceRoot": "packages/style/src",
       "projectType": "library",
       "schematics": {},
       "architect": {
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/style-builders/**/*.ts"]
+            "lintFilePatterns": ["packages/style/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "packages/style-builders/jest.config.js",
+            "jestConfig": "packages/style/jest.config.js",
             "passWithNoTests": true
           }
         },
         "build": {
           "builder": "@nrwl/node:package",
           "options": {
-            "outputPath": "dist/packages/style-builders",
-            "tsConfig": "packages/style-builders/tsconfig.lib.json",
-            "packageJson": "packages/style-builders/package.json",
-            "main": "packages/style-builders/src/index.ts",
+            "outputPath": "dist/packages/style",
+            "tsConfig": "packages/style/tsconfig.lib.json",
+            "packageJson": "packages/style/package.json",
+            "main": "packages/style/src/index.ts",
             "assets": [
-              "packages/style-builders/*.md",
-              "packages/style-builders/builders.json",
+              "packages/style/*.md",
+              "packages/style/builders.json",
               {
-                "glob": "*.json",
-                "input": "packages/style-builders/src/lib",
-                "output": "src/lib"
+                "glob": "schema.json",
+                "input": "packages/style/src/builders/package",
+                "output": "src/builders/package"
               },
               {
-                "glob": "*.json",
-                "input": "packages/style-builders/src/postcss",
-                "output": "src/postcss"
+                "glob": "schema.json",
+                "input": "packages/style/src/builders/postcss",
+                "output": "src/builders/postcss"
               },
               {
-                "glob": "*.json",
-                "input": "packages/style-builders/src/sass",
-                "output": "src/sass"
+                "glob": "schema.json",
+                "input": "packages/style/src/builders/sass",
+                "output": "src/builders/sass"
               }
             ]
           }

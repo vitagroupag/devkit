@@ -1,15 +1,16 @@
 import { JsonArray } from '@angular-devkit/core';
-import { architect, logger } from '../test-setup';
+import { architect, logger } from '../../test-setup';
 import { Options } from './index';
 
-describe('PostCSS Builder', () => {
+describe('Sass Builder', () => {
   it('should properly match input and calculate output files', async () => {
     // A "run" can contain multiple outputs, and contains progress information.
-    const run = await architect.scheduleBuilder('@vitagroup/style-builders:postcss', {
-      rootDir: 'packages/style-builders/src/postcss/__mock__',
-      include: [ '*.css' ],
-      exclude: [ 'ignore.css' ],
-      outDir: 'dist/style-builders/postcss'
+    const run = await architect.scheduleBuilder('@vitagroup-devkit/style:sass', {
+      rootDir: 'packages/style/src/builders/sass/__mock__',
+      include: [ '*.scss' ],
+      exclude: [ 'ignore.scss' ],
+      sourceMap: true,
+      outDir: 'dist/style/builders/sass/__mock__'
     } as Options, { logger });
 
     // The "result" member is the next output of the runner.
@@ -22,7 +23,7 @@ describe('PostCSS Builder', () => {
     await run.stop();
 
     expect(success).toBe(true);
-    expect((inputFiles as JsonArray).length).toEqual(1);
+    expect((inputFiles as JsonArray).length).toEqual(2);
     expect((outputFiles as JsonArray).length).toEqual(1);
   });
 });

@@ -1,5 +1,5 @@
 {
-  "name": "@vitagroup/style-builders",
+  "name": "@vitagroup-devkit/style",
   "version": "0.1.0",
   "builders": "builders.json",
   "dependencies": {

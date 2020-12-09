@@ -3,7 +3,7 @@ import { JsonObject } from '@angular-devkit/core';
 import { join } from 'path';
 import * as postcssBuilder from '../postcss';
 import * as sassBuilder from '../sass';
-import { copyPackageMetadata, globAssetCopies, GlobAssetCopyOptions, GlobInputFileOptions } from '../utils';
+import { copyPackageMetadata, globAssetCopies, GlobAssetCopyOptions, GlobInputFileOptions } from '../../utils';
 
 export type StylePreprocessorType = 'sass' | string;
 
@@ -37,7 +37,7 @@ export default createBuilder<Options>(async (options, context) => {
       logger.info(`Prebuild configuration found. Scheduling builders...`);
 
       logger.info(`Running sass builder...`);
-      const sassBuild = await context.scheduleBuilder(`@vitagroup/style-builders:${ style }`, {
+      const sassBuild = await context.scheduleBuilder(`@vitagroup-devkit/style:${ style }`, {
         ...prebuild,
         outDir: prebuild.outDir || outDir,
         rootDir: prebuild.rootDir || rootDir,
@@ -50,7 +50,7 @@ export default createBuilder<Options>(async (options, context) => {
       if (!sassResult.success) return sassResult;
 
       logger.info(`Running postcss builder...`);
-      const postcssBuild = await context.scheduleBuilder(`@vitagroup/style-builders:postcss`, {
+      const postcssBuild = await context.scheduleBuilder(`@vitagroup-devkit/style:postcss`, {
         rootDir, files: sassResult.outputFiles, replace: true, config: postcssConfig
       } as postcssBuilder.Options, {
         logger: context.logger.createChild('postcss')

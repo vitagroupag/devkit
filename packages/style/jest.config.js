@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 module.exports = {
-  displayName: 'style-builders',
+  displayName: 'style',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -14,5 +14,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/packages/style-builders',
+  coverageDirectory: '../../coverage/packages/style',
 };

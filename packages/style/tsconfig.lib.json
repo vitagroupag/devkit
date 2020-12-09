@@ -7,6 +7,7 @@
     "declaration": true,
     "types": ["node"]
   },
-  "exclude": ["src/test-setup.ts","**/*.spec.ts"],
+  "exclude": [
+    "src/test-setup.ts","**/*.spec.ts"],
   "include": ["**/*.ts"]
 }

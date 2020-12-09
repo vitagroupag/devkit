@@ -3,7 +3,7 @@ import { JsonObject } from '@angular-devkit/core';
 import { outputFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import * as sass from 'sass';
-import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../utils';
+import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../../utils';
 
 type SassJsonOptions = Omit<sass.Options, 'importer' | 'functions' | 'file' | 'data' | 'outFile'>;
 

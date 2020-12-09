@@ -4,7 +4,7 @@ import { outputFileSync, readFileSync } from 'fs-extra';
 import { basename, extname, join } from 'path';
 import postcss, { AcceptedPlugin, ProcessOptions } from 'postcss';
 import postcssrc from 'postcss-load-config';
-import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../utils';
+import { absolutifyPath, debugLogJsonObject, GlobInputFileOptions, globInputFiles } from '../../utils';
 
 export interface Options extends JsonObject, GlobInputFileOptions {
   replace?: boolean;

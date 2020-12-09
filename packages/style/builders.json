@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/architect/src/builders-schema.json",
+  "builders": {
+    "sass": {
+      "implementation": "./src/builders/sass",
+      "schema": "./src/builders/sass/schema.json",
+      "description": "Compiles sass to css and optionally outputs it"
+    },
+    "postcss": {
+      "implementation": "./src/builders/postcss",
+      "schema": "./src/builders/postcss/schema.json",
+      "description": "Post processes css source code using any discoverable postcss configuration"
+    },
+    "package": {
+      "implementation": "./src/builders/package",
+      "schema": "./src/builders/package/schema.json",
+      "description": "Builds publishable npm package for re-usable preprocessor APIs"
+    }
+  }
+}

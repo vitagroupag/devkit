@@ -16,7 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@vitagroup/style-builders": ["packages/style-builders/src/index.ts"]
+      "@vitagroup-devkit/style": ["packages/style/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
