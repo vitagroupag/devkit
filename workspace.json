@@ -10,7 +10,10 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["packages/style/**/*.ts"]
+            "lintFilePatterns": [
+              "packages/style/**/*.ts",
+              "packages/style/src/**/*.html"
+            ]
           }
         },
         "test": {
@@ -18,7 +21,8 @@
           "options": {
             "jestConfig": "packages/style/jest.config.js",
             "passWithNoTests": true
-          }
+          },
+          "outputs": ["coverage/packages/style"]
         },
         "build": {
           "builder": "@nrwl/node:package",
@@ -46,7 +50,8 @@
                 "output": "src/builders/sass"
               }
             ]
-          }
+          },
+          "outputs": ["{options.outputPath}"]
         }
       }
     }
