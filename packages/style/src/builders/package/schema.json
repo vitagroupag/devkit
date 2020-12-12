@@ -23,26 +23,7 @@
     "copy": {
       "type": "array",
       "items": {
-        "anyOf": [
-          { "type": "string" },
-          {
-            "type": "object",
-            "properties": {
-              "from": {
-                "type": "string",
-                "optional": false
-              },
-              "to": { "type": "string" },
-              "pattern": { "type": "string" },
-              "exclude": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ]
+        "$ref": "#/definitions/copyPattern"
       }
     },
     "outDir": {
@@ -73,6 +54,30 @@
       "items": {
         "type": "string"
       }
+    }
+  },
+  "definitions": {
+    "copyPattern": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "optional": false
+            },
+            "to": { "type": "string" },
+            "pattern": { "type": "string" },
+            "exclude": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }
