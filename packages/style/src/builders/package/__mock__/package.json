@@ -1,4 +1,7 @@
 {
   "name": "foo",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "scripts": {
+    "echo": "echo foo"
+  }
 }
